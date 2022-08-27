@@ -31,9 +31,9 @@ def add(plr)
 end
 
 def escapecoords()
-	local exit1entity
-	local exit2entity
-	local escape2entity
+	local exit1entity = 0
+	local exit2entity = 0
+	local escape2entity = 0
 	for i = 1; i < MAX_ROOMS;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
 		room = GetRoomName(i) //make sure we have right room
 		if room == "exit1" Then
@@ -85,18 +85,12 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 		add(plr)
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
 	end
-	room = nil
-	plrx = nil
-	plry = nil
-	plrz = nil
-	plrentity = nil //cleanup
 	CreateTimer("capture",1000,0,plr,role) //script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
 end
 
 public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a handcuffed plr
 	local role = GetPlayerType(plr)
 	capture(plr,role)
-	role = nil
 end
 
 public def OnServerStart()
