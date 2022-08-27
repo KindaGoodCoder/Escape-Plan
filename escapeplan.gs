@@ -35,7 +35,7 @@ def escapecoords()
 	local exit2entity = 0
 	local escape2entity = 0
 	for i = 1; i < 70;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
-		room = GetRoomName(i) //make sure we have right room
+		local room = GetRoomName(i) //make sure we have right room
 		if room == "exit1" Then
 			exit1entity = GetRoomObjectEntity(i,26)
 			exit1[0] = EntityX(exit1entity)
@@ -62,9 +62,6 @@ def escapecoords()
 	if exit1entity == 0 or exit2entity == 0 then //if not exist even if the server went tho every room, a gate is not present. RESTART THE DANG SERVER
 		RestartServer()
 	end
-	exit1entity = nil
-	exit2entity = nil
-	escape2entity = nil
 	bx = escape1[0] - 2
 	by = escape1[1] + 1
 	bz = escape1[2] + 10 //for cuff escapes
@@ -88,18 +85,12 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 		add(plr)
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
 	end
-	room = nil
-	plrx = nil
-	plry = nil
-	plrz = nil
-	plrentity = nil //cleanup
 	CreateTimer("capture",1000,0,plr,role) //script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
 end
 
 public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a handcuffed plr
 	local role = GetPlayerType(plr)
 	capture(plr,role)
-	role = nil
 end
 
 public def OnServerStart()
