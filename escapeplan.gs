@@ -13,12 +13,7 @@ global escape1 = [3, SE_FLOAT]
 global exit2 = [3, SE_FLOAT]
 global escape2 = [3, SE_FLOAT] //coords
 global escapedplrs = [64,SE_INT]  //database of escaped plrs, more detail later on
-global bx
-global by
-global bz
-global ax
-global ay
-global az
+global escape1cuff = [3, SE_FLOAT]
 
 def add(plr)
 	for x = 1; x < 65; x++ //add them to a database of players using the script. 64 is overkill ik but better safe than sorry
@@ -62,9 +57,9 @@ def escapecoords()
 	if exit1entity == 0 or exit2entity == 0 then //if not exist even if the server went tho every room, a gate is not present. RESTART THE DANG SERVER
 		RestartServer()
 	end
-	bx = escape1[0] - 2
-	by = escape1[1] + 1
-	bz = escape1[2] + 10 //for cuff escapes
+	escape1cuff[0] = escape1[0] - 2
+	escape1cuff[1] = escape1[1] + 1
+	escape1cuff[1] = escape1[2] + 10 //for cuff escapes
 end
 
 public def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
@@ -74,10 +69,11 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 	local room = GetPlayerRoomID(plr)
 	room = GetRoomName(room)
 	local plrentity = GetPlayerEntity(plr)
-	local plrx = EntityX(plrentity) //get plr coords
-	local plry = EntityY(plrentity)
-	local plrz = EntityZ(plrentity)
-	if room == "exit1" and role != 3 and plrx >= bx and plry <= by and plrz <= bz then //if handcuffed SCPF staff then be sure to become CI
+	local plrcoords = [3, SE_FLOAT]
+	plrcoords[0] = EntityX(plrentity) //get plr coords
+	plrcoords[1] = EntityY(plrentity)
+	plrcoords[2] = EntityZ(plrentity)
+	if room == "exit1" and role != 3 and plrcoords[0] >= escape1cuff[0] and plrcoords[1] <= escape1cuff[1] and plrcoords[2] <= escape1cuff[2] then //if handcuffed SCPF staff then be sure to become CI
 		add(plr)
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	end
