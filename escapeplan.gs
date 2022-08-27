@@ -34,7 +34,7 @@ def escapecoords()
 	local exit1entity = 0
 	local exit2entity = 0
 	local escape2entity = 0
-	for i = 1; i < MAX_ROOMS;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
+	for i = 1; i < 70;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
 		local room = GetRoomName(i) //make sure we have right room
 		if room == "exit1" Then
 			exit1entity = GetRoomObjectEntity(i,26)
