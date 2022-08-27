@@ -7,4 +7,5 @@ Script will also makes handcuffed escapees to join the enemy team even if they e
 Installation Guide
 1. Download escapeplan.gsc and add to dedicated server tool folder.  
 2. Open server.cfg (already in the folder)
-3. write `script escapeplan.gs` into the file
+3. Write `script escapeplan.gsc` into the file.
+4. The file should now load when the server is started
