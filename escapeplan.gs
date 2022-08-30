@@ -76,17 +76,18 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 	if room == "exit1" and role != 3 and plrcoords[0] >= escape1cuff[0] and plrcoords[1] <= escape1cuff[1] and plrcoords[2] <= escape1cuff[2] then //if handcuffed SCPF staff then be sure to become CI
 		add(plr)
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
+		return
 	end
 	if room == "gatea" and role == 3 and plrx >= 118 and plry <= 496 and plrz <= 20 then //if handcuffed CD then MTF
 		add(plr)
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
+		return
 	end
 	CreateTimer("capture",1000,0,plr,role) //script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
 end
 
 public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a handcuffed plr
-	local role = GetPlayerType(plr)
-	capture(plr,role)
+	local role = GetPlayerType(plr)	
 end
 
 public def OnServerStart()
