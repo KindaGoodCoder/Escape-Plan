@@ -87,7 +87,8 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 end
 
 public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a handcuffed plr
-	local role = GetPlayerType(plr)	
+	local role = GetPlayerType(plr)
+	capture(plr,role)	
 end
 
 public def OnServerStart()
