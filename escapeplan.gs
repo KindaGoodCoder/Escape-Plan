@@ -60,7 +60,10 @@ def escapecoords()
 end
 
 public def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
-	if GetPlayerHandcuff(plr) == 0 then
+	print("lego")
+	local handcuff = GetPlayerHandcuff(plr)
+	if handcuff == 0 then
+		print("FREE")
 		return
 	end
 	local room = GetPlayerRoomID(plr)
@@ -85,7 +88,7 @@ end
 public def OnServerStart()
 	for i; i < 10; i++
 		CreateFakePlayer("Fake Player")
-	end 					//bots for debugging
+	end //bots for debugging
 	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
 end
 
