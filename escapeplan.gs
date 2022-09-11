@@ -63,7 +63,7 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 	print("lego")
 	local handcuff = GetPlayerHandcuff(plr)
 	if handcuff == 0 then
-		print("FREE")
+		print(handcuff)
 		return
 	end
 	local room = GetPlayerRoomID(plr)
