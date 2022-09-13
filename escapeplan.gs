@@ -78,7 +78,7 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 		return
 	end
-	if room == "gatea" and role == 3 and plrx >= 118 and plry <= 496 and plrz <= 20 then //if handcuffed CD then MTF
+	if room == "gatea" and role == 3 and plrcoords[0] >= 118 and plrcoords[1] <= 496 and plrcoords[2] <= 20 then //if handcuffed CD then MTF
 		add(plr)
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
 		return
@@ -92,9 +92,9 @@ public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a han
 end
 
 public def OnServerStart()
-	//for i; i < 3; i++
-	//	CreateFakePlayer("Fake Player")
-	//end 					//bots for debugging
+	/*for i; i < 3; i++
+		CreateFakePlayer("Fake Player")
+	end*/ //bots for debugging
 	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
 end
 
