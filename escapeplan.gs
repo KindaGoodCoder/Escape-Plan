@@ -59,7 +59,18 @@ def escapecoords()
 	end
 end
 
-public def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
+public def OnPlayerConsole(plr,txt)
+	if txt == "handcuff" then
+		if GetPlayerHandcuff(plr) then
+			SetPlayerHandcuff(plr,0)
+		else
+			SetPlayerHandcuff(plr,1)
+			OnPlayerCuffPlayer(0,plr)
+		end
+	end
+end
+
+def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
 	print("lego")
 	local handcuff = GetPlayerHandcuff(plr)
 	if handcuff == 0 then
@@ -69,7 +80,10 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 	local room = GetPlayerRoomID(plr)
 	room = GetRoomName(room)
 	local plrentity = GetPlayerEntity(plr)
-	if room == "exit1" and role != 3 and EntityX(plrentity) >= escape1[0] - 2 and EntityY(plrentity) <= escape1[1] + 1 and EntityZ(plrentity) <= escape1[2] + 10 then //if handcuffed SCPF staff then be sure to become CI
+	local plrx = EntityX(plrentity)
+	local plry = EntityY(plrentity)
+	local plrz = EntityZ(plrentity)
+	if room == "exit1" and role != 3 and plrx <= escape1[0] - 2 and plry >= escape1[1] + 1 and plrz >= escape1[2] + 10 then //if handcuffed SCPF staff then be sure to become CI
 		add(plr)
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	end
