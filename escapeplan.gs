@@ -68,6 +68,18 @@ public def OnPlayerConsole(plr,txt)
 			OnPlayerCuffPlayer(0,plr)
 		end
 	end
+	if txt == "escape" then
+		local role = GetPlayerType(plr)
+		if role == 3 then
+			SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
+		else
+			if role == 4 or role == 8 or role == 0 then
+				SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
+			else
+				SendMessage(plr,"You are not an Escape Class Role")
+			end
+		end
+	end
 end
 
 //
