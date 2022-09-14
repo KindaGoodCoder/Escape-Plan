@@ -73,11 +73,11 @@ public def capture(plr,role) //script to handle handcuffed players (They still s
 	plrcoords[0] = EntityX(plrentity) //get plr coords
 	plrcoords[1] = EntityY(plrentity)
 	plrcoords[2] = EntityZ(plrentity)
-	if room == "exit1" and role != 3 and plrcoords[0] >= escape1cuff[0] and plrcoords[1] <= escape1cuff[1] and plrcoords[2] <= escape1cuff[2] then //if handcuffed SCPF staff then be sure to become CI
+	/*if room == "exit1" and role != 3 and plrcoords[0] >= escape1cuff[0] and plrcoords[1] <= escape1cuff[1] and plrcoords[2] <= escape1cuff[2] then //if handcuffed SCPF staff then be sure to become CI
 		add(plr)
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 		return
-	end
+	end*/ broken... working on it
 	if room == "gatea" and role == 3 and plrcoords[0] >= 118 and plrcoords[1] <= 496 and plrcoords[2] <= 20 then //if handcuffed CD then MTF
 		add(plr)
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
