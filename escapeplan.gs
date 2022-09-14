@@ -86,8 +86,7 @@ end
 
 def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
 	print("lego")
-	local handcuff = GetPlayerHandcuff(plr)
-	if handcuff == 0 then
+	if GetPlayerHandcuff(plr) == 0 then
 		print(handcuff)
 		return
 	end
