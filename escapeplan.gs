@@ -96,7 +96,7 @@ def capture(plr,role) //script to handle handcuffed players (They still should j
 	plrposition[0] = EntityX(plrentity)
 	plrposition[1] = EntityY(plrentity)
 	plrposition[2] = EntityZ(plrentity)
-	if room == "exit1" and role != 3 and plrposition[0] <= escape1[0] - 2 and plrposition[1] >= escape1[1] + 1 and plrposition[2] >= escape1[2] + 10 then //if handcuffed SCPF staff then be sure to become CI
+	if room == "exit1" and role != 3 and plrposition[0] <= (escape1[0] - 2) and plrposition[1] >= (escape1[1] + 1) and plrposition[2] >= (escape1[2] + 10) then //if handcuffed SCPF staff then be sure to become CI
 		add(plr)
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	end
