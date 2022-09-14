@@ -92,7 +92,7 @@ def capture(plr,role) //script to handle handcuffed players (They still should j
 	local room = GetPlayerRoomID(plr)
 	room = GetRoomName(room)
 	local plrentity = GetPlayerEntity(plr)
-	local plrposition = [3, SE_INT]
+	local plrposition = [3, SE_FLOAT]
 	plrposition[0] = EntityX(plrentity)
 	plrposition[1] = EntityY(plrentity)
 	plrposition[2] = EntityZ(plrentity)
