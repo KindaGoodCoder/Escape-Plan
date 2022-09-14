@@ -87,20 +87,20 @@ end
 def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
 	print("lego")
 	if GetPlayerHandcuff(plr) == 0 then
-		print(handcuff)
 		return
 	end
 	local room = GetPlayerRoomID(plr)
 	room = GetRoomName(room)
 	local plrentity = GetPlayerEntity(plr)
-	local plrx = EntityX(plrentity)
-	local plry = EntityY(plrentity)
-	local plrz = EntityZ(plrentity)
-	if room == "exit1" and role != 3 and plrx <= escape1[0] - 2 and plry >= escape1[1] + 1 and plrz >= escape1[2] + 10 then //if handcuffed SCPF staff then be sure to become CI
+	local plrposition = [3, SE_INT]
+	plrposition[0] = EntityX(plrentity)
+	plrposition[1] = EntityY(plrentity)
+	plrposition[2] = EntityZ(plrentity)
+	if room == "exit1" and role != 3 and plrposition[0] <= escape1[0] - 2 and plrposition[1] >= escape1[1] + 1 and plrposition[2] >= escape1[2] + 10 then //if handcuffed SCPF staff then be sure to become CI
 		add(plr)
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	end
-	if room == "gatea" and role == 3 and plrx >= 118 and plry <= 496 and plrz <= 20 then //if handcuffed CD then MTF
+	if room == "gatea" and role == 3 and plrposition[0] >= 118 and plrposition[1] <= 496 and plrposition[2] <= 20 then //if handcuffed CD then MTF
 		add(plr)
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
 	end
