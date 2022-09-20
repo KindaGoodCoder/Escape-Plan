@@ -114,7 +114,7 @@ end
 
 public def OnServerStart()
 	for i; i < 10; i++
-		CreateFakePlayer("Fake Player")
+		CreateFakePlayer(i)
 	end //bots for debugging
 	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
 end
