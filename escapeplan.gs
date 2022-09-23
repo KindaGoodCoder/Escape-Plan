@@ -12,18 +12,8 @@ global exit1 = [3, SE_FLOAT]
 global escape1 = [3, SE_FLOAT]
 global exit2 = [3, SE_FLOAT] // Gate A has fixed coords but better to prepare
 global escape2 = [3, SE_FLOAT] //coords
-global escapedplrs = [64,SE_INT]  //database of escaped plrs, more detail later on
+global escapedplrs = [65,SE_INT]  //database of escaped plrs, more detail later on
 global escape1cuff = [3, SE_FLOAT] //coords for gate b's escape. Gate A is always fixed, gate b isn't.
-
-def add(plr)
-	for x = 1; x < 65; x++ //add them to a database of players using the script. 64 is overkill ik but better safe than sorry
-		escapee = escapedplrs[x]
-		if escapee == 0 then
-			escapedplrs[x] = plr
-			break
-		end
-	end
-end
 
 def escapecoords()
 	local exit1entity = 0
@@ -73,7 +63,7 @@ public def OnPlayerConsole(plr,txt)
 		if role == 3 then
 			SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 		else
-			if role == 4 or role == 8 or role == 0 then
+			if role == 4 or role == 8 then
 				SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
 			else
 				SendMessage(plr,"You are not an Escape Class Role")
@@ -97,11 +87,11 @@ def capture(plr,role) //script to handle handcuffed players (They still should j
 	plrposition[1] = EntityY(plrentity)
 	plrposition[2] = EntityZ(plrentity)
 	if room == "exit1" and role != 3 and plrposition[0] <= (escape1[0] - 2) and plrposition[1] >= (escape1[1] + 1) and plrposition[2] >= (escape1[2] + 10) then //if handcuffed SCPF staff then be sure to become CI
-		add(plr)
+		escapedplrs[plr] = true
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	end
 	if room == "gatea" and role == 3 and plrposition[0] >= 118 and plrposition[1] <= 496 and plrposition[2] <= 20 then //if handcuffed CD then MTF
-		add(plr)
+		escapedplrs[plr] = true
 		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
 	end
 	CreateTimer("capture",1000,0,plr,role) //script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
@@ -113,7 +103,7 @@ public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a han
 end
 
 public def OnServerStart()
-	for i; i < 10; i++
+	for i = 1; i < 10; i++
 		CreateFakePlayer(i)
 	end //bots for debugging
 	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
@@ -125,7 +115,7 @@ end
 
 public def OnPlayerEscapeButDead(plr,_,before) //make them actually escape
 	SetPlayerType(plr,before)
-	add(plr)
+	escapedplrs[plr] = true
 	if before == 3 then
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	else
@@ -134,16 +124,14 @@ public def OnPlayerEscapeButDead(plr,_,before) //make them actually escape
 end
 
 def escaped(plr,before) //make them spawn where they escaped
-	for x; x < len escapedplrs; x++
-		if escapedplrs[x] == plr then
-			if before == 7 then //If this happens and they're chaos, they surely must have escaped tho gate b
-				SetPlayerPosition(plr,"exit1", exit1[0], exit1[1], exit1[2]) //gate b spawn
-			else 
-				SetPlayerPosition(plr,"gatea", exit2[0], exit2[1], exit2[2]) //gate a spawn
-			end
-			escapedplrs[x] = 0 //delete em from database of escaped players, don't need em
-			break
+	if escapedplrs[plr] == true then
+		if before == 7 then //If this happens and they're chaos, they surely must have escaped tho gate b
+			SetPlayerPosition(plr,"exit1", exit1[0], exit1[1], exit1[2]) //gate b spawn
+		else 
+			SetPlayerPosition(plr,"gatea", exit2[0], exit2[1], exit2[2]) //gate a spawn
 		end
+		escapedplrs[x] = false //delete em from database of escaped players, don't need em
+		break
 	end
 end
 
