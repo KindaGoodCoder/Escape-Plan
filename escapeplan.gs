@@ -130,7 +130,7 @@ def escaped(plr,before) //make them spawn where they escaped
 		else 
 			SetPlayerPosition(plr,"gatea", exit2[0], exit2[1], exit2[2]) //gate a spawn
 		end
-		escapedplrs[x] = false //delete em from database of escaped players, don't need em
+		escapedplrs[plr] = false //delete em from database of escaped players, don't need em
 		break
 	end
 end
