@@ -52,7 +52,7 @@ public def OnPlayerConsole(plr,txt)
 				SetPlayerHandcuff(plr,0)
 			else
 				SetPlayerHandcuff(plr,1)
-				OnPlayerCuffPlayer(0,plr)
+				OnPlayerCuffPlayer(0,plr) //Call cuff callback. Assume player 0 == server
 			end
 		case "escape"
 			select GetPlayerType(plr)
