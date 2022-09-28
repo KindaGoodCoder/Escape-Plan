@@ -94,9 +94,7 @@ public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a han
 end
 
 public def OnServerStart()
-	for i = 1; i < 11; i++
-		CreateFakePlayer(i)
-	end //bots for debugging
+	for i = 1; i < 11; i++; CreateFakePlayer(i); end//bots for debugging
 	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
 end
 
