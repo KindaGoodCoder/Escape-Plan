@@ -20,16 +20,16 @@ def escapecoords()
 	local exit2entity = 0
 	local escape2entity = 0
 	for i = 1; i < 70;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
-		//make sure we have right room
-		select GetRoomName(i)
+		select GetRoomName(i) //make sure we have right room
 			case "exit1"
 				exit1entity = GetRoomObjectEntity(i,26)
 				exit1[0] = EntityX(exit1entity)
 				exit1[1] = EntityY(exit1entity)
 				exit1[2] = EntityZ(exit1entity) // get x,y,z of gateb spawn
-				escape1[0] = exit1[0] + 4
-				escape1[1] = exit1[1] - 3
-				escape1[2] = exit1[2] - 26 // get x,y,z of gateb escape
+				escape1entity = GetRoomObjectEntity(i,27)
+				escape1[0] = EntityX(escape1entity)
+				escape1[1] = EntityY(escape1entity)
+				escape1[2] = EntityZ(escape1entity) // get x,y,z of gateb escape
 			case "gatea"
 				exit2entity = GetRoomObjectEntity(i,27)
 				exit2[0] = EntityX(exit2entity)
@@ -39,10 +39,12 @@ def escapecoords()
 				escape2[0] = EntityX(escape2entity)
 				escape2[1] = EntityY(escape2entity)
 				escape2[2] = EntityZ(escape2entity) // get x,y,z of gate a escape
+			case "gateaentrance"
+				local debounce = true
 		end
-		if exit2entity != 0 and exit1entity != 0 then break// check both gates exist
+		if debounce and exit2entity != 0 and exit1entity != 0 then break// check both gates exist
 	end
-	if exit1entity == 0 or exit2entity == 0 then RestartServer()//if not exist even if the server went tho every room, a gate is not present. RESTART THE DANG SERVER
+	if exit1entity == 0 or debounce == 0 then RestartServer()//if not exist even if the server went tho every room,one of the gate is not present. RESTART THE DANG SERVER		
 end
 
 public def OnPlayerConsole(plr,txt)
@@ -78,7 +80,7 @@ def capture(plr,role) //script to handle handcuffed players (They still should j
 	plrposition[0] = EntityX(plrentity)
 	plrposition[1] = EntityY(plrentity)
 	plrposition[2] = EntityZ(plrentity)
-	if room == "exit1" and role != 3 and plrposition[0] <= (escape1[0] - 2) and plrposition[1] >= (escape1[1] + 1) and plrposition[2] >= (escape1[2] + 10) then //if handcuffed SCPF staff then be sure to become CI
+	if room == "exit1" and role != 3 and plrposition[0] >= (escape1[0] - 2) and plrposition[2] <= (escape1[2] + 10) then //if handcuffed SCPF staff then be sure to become CI
 		escapedplrs[plr] = true
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	end
@@ -94,8 +96,8 @@ public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a han
 end
 
 public def OnServerStart()
-	for i = 1; i < 11; i++; CreateFakePlayer(i); end//bots for debugging
-	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
+	for i = 1; i < 10; i++;CreateFakePlayer(i); end //bots for debugging
+	escapecoords()
 end
 
 public def OnServerRestart()
@@ -114,12 +116,12 @@ end
 
 def escaped(plr,before) //make them spawn where they escaped
 	if escapedplrs[plr] == true then
+		escapedplrs[plr] = false //delete em from database of escaped players, don't need em
 		if before == 7 then //If this happens and they're chaos, they surely must have escaped tho gate b
 			SetPlayerPosition(plr,"exit1", exit1[0], exit1[1], exit1[2]) //gate b spawn
 		else 
 			SetPlayerPosition(plr,"gatea", exit2[0], exit2[1], exit2[2]) //gate a spawn
-		end
-		escapedplrs[plr] = false //delete em from database of escaped players, don't need em
+		end		
 	end
 end
 
