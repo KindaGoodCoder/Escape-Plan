@@ -20,55 +20,49 @@ def escapecoords()
 	local exit2entity = 0
 	local escape2entity = 0
 	for i = 1; i < 70;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
-		local room = GetRoomName(i) //make sure we have right room
-		if room == "exit1" Then
-			exit1entity = GetRoomObjectEntity(i,26)
-			exit1[0] = EntityX(exit1entity)
-			exit1[1] = EntityY(exit1entity)
-			exit1[2] = EntityZ(exit1entity) // get x,y,z of gateb spawn
-			escape1[0] = exit1[0] + 4
-			escape1[1] = exit1[1] - 3
-			escape1[2] = exit1[2] - 26 // get x,y,z of gateb escape
+		//make sure we have right room
+		select GetRoomName(i)
+			case "exit1"
+				exit1entity = GetRoomObjectEntity(i,26)
+				exit1[0] = EntityX(exit1entity)
+				exit1[1] = EntityY(exit1entity)
+				exit1[2] = EntityZ(exit1entity) // get x,y,z of gateb spawn
+				escape1[0] = exit1[0] + 4
+				escape1[1] = exit1[1] - 3
+				escape1[2] = exit1[2] - 26 // get x,y,z of gateb escape
+			case "gatea"
+				exit2entity = GetRoomObjectEntity(i,27)
+				exit2[0] = EntityX(exit2entity)
+				exit2[1] = EntityY(exit2entity)
+				exit2[2] = EntityZ(exit2entity) // get x,y,z of gate a spawn
+				escape2entity = GetRoomObjectEntity(i,11)
+				escape2[0] = EntityX(escape2entity)
+				escape2[1] = EntityY(escape2entity)
+				escape2[2] = EntityZ(escape2entity) // get x,y,z of gate a escape
 		end
-		if room == "gatea" then
-			exit2entity = GetRoomObjectEntity(i,27)
-			exit2[0] = EntityX(exit2entity)
-			exit2[1] = EntityY(exit2entity)
-			exit2[2] = EntityZ(exit2entity) // get x,y,z of gate a spawn
-			escape2entity = GetRoomObjectEntity(i,11)
-			escape2[0] = EntityX(escape2entity)
-			escape2[1] = EntityY(escape2entity)
-			escape2[2] = EntityZ(escape2entity) // get x,y,z of gate a escape
-		end
-		if exit2entity != 0 and exit1entity != 0 then // check both gates exist
-			break
-		end
+		if exit2entity != 0 and exit1entity != 0 then break// check both gates exist
 	end
-	if exit1entity == 0 or exit2entity == 0 then //if not exist even if the server went tho every room, a gate is not present. RESTART THE DANG SERVER
-		RestartServer()
-	end
+	if exit1entity == 0 or exit2entity == 0 then RestartServer()//if not exist even if the server went tho every room, a gate is not present. RESTART THE DANG SERVER
 end
 
 public def OnPlayerConsole(plr,txt)
-	if txt == "handcuff" then
-		if GetPlayerHandcuff(plr) then
-			SetPlayerHandcuff(plr,0)
-		else
-			SetPlayerHandcuff(plr,1)
-			OnPlayerCuffPlayer(0,plr)
-		end
-	end
-	if txt == "escape" then
-		local role = GetPlayerType(plr)
-		if role == 3 then
-			SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
-		else
-			if role == 4 or role == 8 then
-				SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
+	select txt
+		case "handcuff"
+			if GetPlayerHandcuff(plr) then
+				SetPlayerHandcuff(plr,0)
 			else
-				SendMessage(plr,"You are not an Escape Class Role")
+				SetPlayerHandcuff(plr,1)
+				OnPlayerCuffPlayer(0,plr) //Call cuff callback. Assume player 0 == server
 			end
-		end
+		case "escape"
+			select GetPlayerType(plr)
+				case 3 
+					SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
+				case 4,8
+					SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
+				else
+					SendMessage(plr,"You are not an Escape Class Role")
+			end
 	end
 end
 
@@ -76,9 +70,7 @@ end
 
 def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
 	print("lego")
-	if GetPlayerHandcuff(plr) == 0 then
-		return
-	end
+	if GetPlayerHandcuff(plr) == 0 then	return
 	local room = GetPlayerRoomID(plr)
 	room = GetRoomName(room)
 	local plrentity = GetPlayerEntity(plr)
@@ -98,14 +90,11 @@ def capture(plr,role) //script to handle handcuffed players (They still should j
 end
 
 public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a handcuffed plr
-	local role = GetPlayerType(plr)
-	capture(plr,role)
+	capture(plr,GetPlayerType(plr))
 end
 
 public def OnServerStart()
-	for i = 1; i < 10; i++
-		CreateFakePlayer(i)
-	end //bots for debugging
+	for i = 1; i < 11; i++; CreateFakePlayer(i); end//bots for debugging
 	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
 end
 
