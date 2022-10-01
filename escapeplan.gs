@@ -10,101 +10,103 @@
 
 global exit1 = [3, SE_FLOAT]
 global escape1 = [3, SE_FLOAT]
-global exit2 = [3, SE_FLOAT]
+global exit2 = [3, SE_FLOAT] // Gate A has fixed coords but better to prepare
 global escape2 = [3, SE_FLOAT] //coords
-global escapedplrs = [64,SE_INT]  //database of escaped plrs, more detail later on
-global escape1cuff = [3, SE_FLOAT]
-
-def add(plr)
-	for x = 1; x < 65; x++ //add them to a database of players using the script. 64 is overkill ik but better safe than sorry
-		escapee = escapedplrs[x]
-		if escapee == 0 then
-			escapedplrs[x] = plr
-			break
-		end
-	end
-end
+global escapedplrs = [65,SE_INT]  //database of escaped plrs, more detail later on
+global escape1cuff = [3, SE_FLOAT] //coords for gate b's escape. Gate A is always fixed, gate b isn't.
 
 def escapecoords()
 	local exit1entity = 0
 	local exit2entity = 0
 	local escape2entity = 0
 	for i = 1; i < 70;i++ //theres bout 60-70 rooms max in a seed, for some reason each room id changes for each seed. 
-		local room = GetRoomName(i) //make sure we have right room
-		if room == "exit1" Then
-			exit1entity = GetRoomObjectEntity(i,26)
-			exit1[0] = EntityX(exit1entity)
-			exit1[1] = EntityY(exit1entity)
-			exit1[2] = EntityZ(exit1entity) // get x,y,z of gateb spawn
-			escape1[0] = exit1[0] + 4
-			escape1[1] = exit1[1] - 3
-			escape1[2] = exit1[2] - 26 // get x,y,z of gateb escape
+		select GetRoomName(i) //make sure we have right room
+			case "exit1"
+				exit1entity = GetRoomObjectEntity(i,26)
+				exit1[0] = EntityX(exit1entity)
+				exit1[1] = EntityY(exit1entity)
+				exit1[2] = EntityZ(exit1entity) // get x,y,z of gateb spawn
+				escape1entity = GetRoomObjectEntity(i,27)
+				escape1[0] = EntityX(escape1entity)
+				escape1[1] = EntityY(escape1entity)
+				escape1[2] = EntityZ(escape1entity) // get x,y,z of gateb escape
+			case "gatea"
+				exit2entity = GetRoomObjectEntity(i,27)
+				exit2[0] = EntityX(exit2entity)
+				exit2[1] = EntityY(exit2entity)
+				exit2[2] = EntityZ(exit2entity) // get x,y,z of gate a spawn
+				escape2entity = GetRoomObjectEntity(i,11)
+				escape2[0] = EntityX(escape2entity)
+				escape2[1] = EntityY(escape2entity)
+				escape2[2] = EntityZ(escape2entity) // get x,y,z of gate a escape
+			case "gateaentrance" //gate a always spawns, gate a entrance on the other hand...
+				local debounce = true
 		end
-		if room == "gatea" then
-			exit2entity = GetRoomObjectEntity(i,27)
-			exit2[0] = EntityX(exit2entity)
-			exit2[1] = EntityY(exit2entity)
-			exit2[2] = EntityZ(exit2entity) // get x,y,z of gate a spawn
-			escape2entity = GetRoomObjectEntity(i,11)
-			escape2[0] = EntityX(escape2entity)
-			escape2[1] = EntityY(escape2entity)
-			escape2[2] = EntityZ(escape2entity) // get x,y,z of gate a escape
-		end
-		if exit2entity != 0 and exit1entity != 0 then // check both gates exist
-			break
-		end
+		if debounce and exit2entity != 0 and exit1entity != 0 then break// check both gates exist
 	end
-	if exit1entity == 0 or exit2entity == 0 then //if not exist even if the server went tho every room, a gate is not present. RESTART THE DANG SERVER
-		RestartServer()
-	end
-	escape1cuff[0] = escape1[0] - 2
-	escape1cuff[1] = escape1[1] + 1
-	escape1cuff[1] = escape1[2] + 10 //for cuff escapes
+	if exit1entity == 0 or debounce == 0 then RestartServer()//if not exist even if the server went tho every room,one of the gate is not present. RESTART THE DANG SERVER		
 end
 
-public def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
-	if GetPlayerHandcuff(plr) == 0 then
-		return
+public def OnPlayerConsole(plr,txt)
+	select txt
+		case "handcuff" //Handcuff urself.
+			if GetPlayerHandcuff(plr) then
+				SetPlayerHandcuff(plr,0)
+			else
+				SetPlayerHandcuff(plr,1)
+				OnPlayerCuffPlayer(0,plr) //Call cuff callback. Assume player 0 == server
+			end
+		case "escape" //Auto escape
+			select GetPlayerType(plr)
+				case 3 
+					SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2]) //if cd escape tho gate a
+				case 4,8
+					SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2]) //if foundation staff, go tho gate b
+				else
+					SendMessage(plr,"You are not an Escape Class Role")
+			end
 	end
+end
+
+//
+
+def capture(plr,role) //script to handle handcuffed players (They still should join the opposing team even if they escape tho their gatea)
+	if GetPlayerHandcuff(plr) == 0 then	return //if not handcuffed, end script
 	local room = GetPlayerRoomID(plr)
 	room = GetRoomName(room)
 	local plrentity = GetPlayerEntity(plr)
-	local plrcoords = [3, SE_FLOAT]
-	plrcoords[0] = EntityX(plrentity) //get plr coords
-	plrcoords[1] = EntityY(plrentity)
-	plrcoords[2] = EntityZ(plrentity)
-	/*if room == "exit1" and role != 3 and plrcoords[0] >= escape1cuff[0] and plrcoords[1] <= escape1cuff[1] and plrcoords[2] <= escape1cuff[2] then //if handcuffed SCPF staff then be sure to become CI
-		add(plr)
-		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
-		return
-	end*/ broken... working on it
-	if room == "gatea" and role == 3 and plrcoords[0] >= 118 and plrcoords[1] <= 496 and plrcoords[2] <= 20 then //if handcuffed CD then MTF
-		add(plr)
-		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2])
-		return
+	local plrposition = [3, SE_FLOAT]
+	plrposition[0] = EntityX(plrentity)
+	plrposition[1] = EntityY(plrentity)
+	plrposition[2] = EntityZ(plrentity)
+	if room == "exit1" and role != 3 and plrposition[0] >= (escape1[0] - 2) and plrposition[2] <= (escape1[2] + 10) then //if handcuffed SCPF staff then be sure to become CI
+		escapedplrs[plr] = true
+		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2]) //if not cd become ci at gate b
 	end
+	if room == "gatea" and role == 3 and plrposition[0] >= 118 and plrposition[1] <= 496 and plrposition[2] <= 20 then //if handcuffed CD then MTF
+		escapedplrs[plr] = true
+		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2]) if cd become mtf and gate a
+	end
+	//remember that changing roles will automatically remove handcuffs
 	CreateTimer("capture",1000,0,plr,role) //script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
 end
 
 public def OnPlayerCuffPlayer(_,plr) //get ready to cause a lot of lag for a handcuffed plr
-	local role = GetPlayerType(plr)
-	capture(plr,role)	
+	capture(plr,GetPlayerType(plr))
 end
 
 public def OnServerStart()
-	/*for i; i < 3; i++
-		CreateFakePlayer("Fake Player")
-	end*/ //bots for debugging
-	escapecoords() //inefficient to create seperate lines at both server start and restart ik but whats the alternative. When round starts?
+	//for i = 1; i < 10; i++;CreateFakePlayer(i); end //bots for debugging
+	escapecoords()
 end
 
 public def OnServerRestart()
-	escapecoords()
+	escapecoords() //Get new coords
 end
 
 public def OnPlayerEscapeButDead(plr,_,before) //make them actually escape
 	SetPlayerType(plr,before)
-	add(plr)
+	escapedplrs[plr] = true //A plrs id acts as an index. The index refers to a debounce or var switch.
 	if before == 3 then
 		SetPlayerPosition(plr,"gatea", escape2[0], escape2[1], escape2[2])
 	else
@@ -113,16 +115,13 @@ public def OnPlayerEscapeButDead(plr,_,before) //make them actually escape
 end
 
 def escaped(plr,before) //make them spawn where they escaped
-	for x; x < len escapedplrs; x++
-		if escapedplrs[x] == plr then
-			if before == 7 then //If this happens and they're chaos, they surely must have escaped tho gate b
-				SetPlayerPosition(plr,"exit1", exit1[0], exit1[1], exit1[2]) //gate b spawn
-			else 
-				SetPlayerPosition(plr,"gatea", exit2[0], exit2[1], exit2[2]) //gate a spawn
-			end
-			escapedplrs[x] = 0 //delete em from database of escaped players, don't need em
-			break
-		end
+	if escapedplrs[plr] == true then //if debounce == true, execute escape
+		escapedplrs[plr] = false //delete em from database of escaped players, don't need em
+		if before == 7 then //If this happens and they're chaos, they surely must have escaped tho gate b
+			SetPlayerPosition(plr,"exit1", exit1[0], exit1[1], exit1[2]) //gate b spawn
+		else 
+			SetPlayerPosition(plr,"gatea", exit2[0], exit2[1], exit2[2]) //gate a spawn
+		end		
 	end
 end
 
