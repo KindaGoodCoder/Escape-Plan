@@ -85,7 +85,7 @@ def capture(plr,role) //script to handle handcuffed players (They still should j
 	end
 	if room == "gatea" and role == 3 and plrposition[0] >= 118 and plrposition[1] <= 496 and plrposition[2] <= 20 then //if handcuffed CD then MTF
 		escapedplrs[plr] = true
-		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2]) if cd become mtf and gate a
+		SetPlayerPosition(plr,"exit1", escape1[0], escape1[1], escape1[2]) //if cd become mtf and gate a
 	end
 	//remember that changing roles will automatically remove handcuffs
 	CreateTimer("capture",1000,0,plr,role) //script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
