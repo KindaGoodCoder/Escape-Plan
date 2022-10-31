@@ -14,6 +14,6 @@ function escapecoords()
             exit1 = function() entitypointers[1], exit1, entitypointers[2], escape1 = findcoords(26),findcoords(27) end,
             gatea = function() entitypointers[3], exit2, entitypointers[4], escape2 = findcoords(27),findcoords(11) end
         }
-        type(select[i]) == "function" and select[i]()
+        if type(select[i]) == "function" then select[i]() end
     end
 end
