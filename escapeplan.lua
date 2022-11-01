@@ -69,32 +69,32 @@ function OnPlayerCuffPlayer(_,plr)
     return -1
 end
 
--- function OnPlayerConsole(plr,txt)
---     if txt = "handcuff" then
---         if getplayerhandcuff(plr) == 1 then
---             setplayerhandcuff(plr,0)
---         else
---             setplayerhandcuff(plr,1)
---             -- OnPlayerCuffPlayer(0,plr) --Call cuff callback. Assume player 0 == server
---         end
---     elseif txt == "escape" then
---         local role = getplayertype(plr)
---         if role == 3 then
---             setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3])
---         elseif role == 4 or role == 8 then
---             setplayerposition(plr,"exit1", escape1[1], escape1[2], escape1[3])
---         else
---             sendmessage(plr,"You are not an Escape Class Role")
---         end
---     elseif txt == "testescape" then
---         local role = getplayertype(plr)
---         if role == 3 then
---             setplayerposition(plr,"exit1", escape1[1], escape1[2], escape1[3])
---         elseif role == 4 or role == 8 then
---             setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3])            
---         else
---             sendmessage(plr,"You are not an Escape Class Role")
---         end
---     end
---     return -1
--- end
+function OnPlayerConsole(plr,txt)
+    if txt == "handcuff" then
+        if getplayerhandcuff(plr) == 1 then
+            setplayerhandcuff(plr,0)
+        else
+            setplayerhandcuff(plr,1)
+            -- OnPlayerCuffPlayer(0,plr) --Call cuff callback. Assume player 0 == server
+        end
+    elseif txt == "escape" then
+        local role = getplayertype(plr)
+        if role == 3 then
+            setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3])
+        elseif role == 4 or role == 8 then
+            setplayerposition(plr,"exit1", escape1[1], escape1[2], escape1[3])
+        else
+            sendmessage(plr,"You are not an Escape Class Role")
+        end
+    elseif txt == "testescape" then
+        local role = getplayertype(plr)
+        if role == 3 then
+            setplayerposition(plr,"exit1", escape1[1], escape1[2], escape1[3])
+        elseif role == 4 or role == 8 then
+            setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3])            
+        else
+            sendmessage(plr,"You are not an Escape Class Role")
+        end
+    end
+    return -1
+end
