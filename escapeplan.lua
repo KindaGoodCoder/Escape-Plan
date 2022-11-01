@@ -75,7 +75,7 @@ function OnPlayerConsole(plr,txt)
             setplayerhandcuff(plr,0)
         else
             setplayerhandcuff(plr,1)
-            -- OnPlayerCuffPlayer(0,plr) --Call cuff callback. Assume player 0 == server
+            OnPlayerCuffPlayer(0,plr) --Call cuff callback. Assume player 0 == server
         end
     elseif txt == "escape" then
         local role = getplayertype(plr)
