@@ -101,7 +101,7 @@ public def OnServerStart()
 end
 
 public def OnServerRestart()
-	escapecoords()
+	escapecoords() 
 end
 
 public def OnPlayerEscapeButDead(plr,_,before) //make them actually escape
