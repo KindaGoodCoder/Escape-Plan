@@ -3,6 +3,7 @@ escapedplrs = {}
 
 function OnScriptLoaded()
     print("EscapePlan")
+    if not escapedplrs[1] then print("lego") end
     return -1
 end
 
@@ -43,13 +44,16 @@ function OnPlayerEscapeButDead(plr,_,before) --make them actually escape
 end
 
 function escaped(plr,before)
-    if not escapedplrs[plr] then return end
+    print("lego")
+    if not escapedplrs[plr] then return -1 end
+    print("mango")
     escapedplrs = false --Remove them from escapedplrs list
     if before == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2], exit1[3]) else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
     --If they're on the list and turns into Chaos, then they escaped tho gate b. Otherwise they must have escaped tho gate a.
+    return -1
 end
 
-function OnPlayerEscape(plr,before) createtimer("escaped",100,0,plr,before); return -1 end --execute escaped function after 100 milliseconds to make room for the natural (delayed) spawn position change
+function OnPlayerEscape(plr,before) createtimer("escaped",1000,0,plr,before); return -1 end --execute escaped function after 100 milliseconds to make room for the natural (delayed) spawn position change
 
 function OnPlayerCuffPlayer(_,plr)
     if getplayerhandcuff(plr) == 0 then	return -1 end
