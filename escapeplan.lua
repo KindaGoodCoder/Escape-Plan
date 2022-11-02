@@ -3,7 +3,6 @@ escapedplrs = {}
 
 function OnScriptLoaded()
     print("EscapePlan")
-    if not escapedplrs[1] then print("lego") end
     return -1
 end
 
@@ -24,12 +23,12 @@ function escapecoords()
     end
     local select = {
         ["exit1"] = function(i) entitypointers[1], exit1, escape1 = findcoords(i,26,27) end,
-        ["gatea"] = function(i) entitypointers[2], exit2, escape2 = findcoords(i,27,11) end,
-        ["gateaentrance"] = function(i) entitypointers[3] = true end
+        ["gatea"] = function(i) _, exit2, escape2 = findcoords(i,27,11) end,
+        ["gateaentrance"] = function(i) entitypointers[2] = true end
     }    
     for i = 1, 70 do
         if type(select[getroomname(i)]) == "function" then select[getroomname(i)](i) end
-        if entitypointers[1] and entitypointers[2] and entitypointers[3] then
+        if entitypointers[1] and entitypointers[2] then
             debounce = true; break
         end
     end
