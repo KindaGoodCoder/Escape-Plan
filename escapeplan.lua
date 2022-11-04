@@ -1,4 +1,3 @@
-exit1,escape1,exit2,escape2 = 0
 escapedplrs = {}
 
 function OnScriptLoaded()
@@ -18,14 +17,13 @@ function escapecoords()
     local entitypointers = {}    
     for i = 1, 70 do
         local findcoords = function(index,index2)
-            entity,entity2 = getroomobjectentity(i,index), getroomobjectentity(i,index2)
+            local entity,entity2 = getroomobjectentity(i,index), getroomobjectentity(i,index2)
             return true,{entityx(entity),entityy(entity),entityz(entity)},{entityx(entity2),entityy(entity2),entityz(entity2)}
         end
         local select = {
             ["exit1"] = function() entitypointers[1], exit1, escape1 = findcoords(26,27) end,
             ["gatea"] = function() entitypointers[2], exit2, escape2 = findcoords(27,11) end,
-            ["gateaentrance"] = function() entitypointers[3] = true end
-        }    
+            ["gateaentrance"] = function() entitypointers[3] = true end}    
         if type(select[getroomname(i)]) == "function" then select[getroomname(i)]() end
         if entitypointers[1] and entitypointers[2] and entitypointers[3] then --if all coords found, end function
             escape2f = function(plr) setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3]) end --escape2f(plr) will now teleport plr to gate a escape
@@ -59,20 +57,21 @@ function OnPlayerEscape(plr,role) createtimer("escaped",50,0,plr,role) return -1
 
 function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even if escape tho own gate
     plr = tonumber(plr)
-    if getplayerhandcuff(plr) == 0 then	return -1 end
-    local role = getplayertype(plr)
-    room = getroomname(getplayerroomid(plr))
-    local plrentity = getplayerentity(plr)
-    local plrposition = {entityx(plrentity),entityy(plrentity),entityz(plrentity)}
-    if room == "exit1" and role ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
-        escapedplrs[plr] = true
-        escape1f(plr)
+    if getplayerhandcuff(plr) == 1 then
+        local role = getplayertype(plr)
+        room = getroomname(getplayerroomid(plr))
+        local plrposition = getplayerentity(plr)
+        plrposition = {entityx(plrentity),entityy(plrentity),entityz(plrentity)}
+        if room == "exit1" and role ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
+            escapedplrs[plr] = true
+            escape1f(plr)
+        end
+        if room == "gatea" and role == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
+            escapedplrs[plr] = true
+            escape2f(plr)
+        end
+        createtimer("OnPlayerCuffPlayer",1000,0,_,plr) --script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
     end
-    if room == "gatea" and role == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
-        escapedplrs[plr] = true
-        escape2f(plr)
-    end
-    createtimer("OnPlayerCuffPlayer",1000,0,_,plr) --script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
     return -1
 end
 
@@ -93,8 +92,7 @@ function OnPlayerConsole(plr,txt) --Console makes testing a lot easier
             end
         end,
         ["escape"] = function() teleport(function() escape2f(plr) end, function() escape1f(plr) end) end, --Functions as arguements. Runs when called inside the teleport()
-        ["testescape"] = function() teleport(function() escape1f(plr) end, function() escape2f(plr) end) end
-    }
+        ["testescape"] = function() teleport(function() escape1f(plr) end, function() escape2f(plr) end) end}
     if type(select[txt]) == "function" then select[txt]() end
     return -1
 end
