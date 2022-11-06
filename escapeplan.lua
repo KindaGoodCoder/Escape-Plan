@@ -70,7 +70,8 @@ function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even 
             escapedplrs[plr] = true
             escape2f(plr)
         end
-        createtimer("OnPlayerCuffPlayer",1000,0,_,plr) --script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
+        recursive = function(_,plr) OnPlayerCuffPlayer(_,plr) end
+        createtimer("recursive",1000,0,_,plr) --script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
     end
     return -1
 end
