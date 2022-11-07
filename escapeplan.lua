@@ -7,13 +7,11 @@ end
 
 function OnServerStart()
     for i = 1, 10 do createfakeplayer(i) end
-    if escapecoords() then restartserver() end
+    OnServerRestart()
     return -1
 end
 
-function OnServerRestart() if escapecoords() then restartserver() end; return -1 end
-
-function escapecoords()
+function OnServerRestart()    
     local entitypointers = {}    
     for i = 1, 70 do
         local findcoords = function(index,index2)
@@ -28,10 +26,11 @@ function escapecoords()
         if entitypointers[1] and entitypointers[2] and entitypointers[3] then --if all coords found, end function
             escape2f = function(plr) setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3]) end --escape2f(plr) will now teleport plr to gate a escape
             escape1f = function(plr) setplayerposition(plr,"exit1", escape1[1], escape1[2], escape1[3]) end --escape2f(plr) will now teleport plr to gate b escape
-            return false --return false so script doesnt restart server
+            return -1
         end
     end
-    return true
+    restartserver()
+    return -1
 end
 
 function OnPlayerEscapeButDead(plr,_,role) --make them actually escape
@@ -47,7 +46,7 @@ function escaped(plr,role)
     if escapedplrs[plr] then
         print("pain")
         escapedplrs[plr] = false --Remove them from escapedplrs list
-        if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+10, exit1[3]) else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
+        if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+1, exit1[3]) else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
         --If they're on the list and turns into Chaos, then they escaped tho gate b. Otherwise they must have escaped tho gate a.
     end
     return -1
@@ -60,17 +59,17 @@ function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even 
     if getplayerhandcuff(plr) == 1 then
         local role = getplayertype(plr)
         room = getroomname(getplayerroomid(plr))
-        local plrposition = getplayerentity(plr)
-        plrposition = {entityx(plrentity),entityy(plrentity),entityz(plrentity)}
+        local plrentity = getplayerentity(plr)
+        local plrposition = {entityx(plrentity),entityy(plrentity),entityz(plrentity)}
         if room == "exit1" and role ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
-            escapedplrs[plr] = true
-            escape1f(plr)
-        end
-        if room == "gatea" and role == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
             escapedplrs[plr] = true
             escape2f(plr)
         end
-        recursive = function(_,plr) OnPlayerCuffPlayer(_,plr) end
+        if room == "gatea" and role == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
+            escapedplrs[plr] = true
+            escape1f(plr)
+        end
+        recursive = function(_,plr) OnPlayerCuffPlayer(_,plr); return -1 end
         createtimer("recursive",1000,0,_,plr) --script needs to run every 1 second to detect. It takes >1 second from the beginning of new escape coords to reach proper
     end
     return -1
