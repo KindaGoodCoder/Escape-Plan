@@ -59,8 +59,8 @@ function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even 
     if getplayerhandcuff(plr) == 1 then
         local role = getplayertype(plr)
         room = getroomname(getplayerroomid(plr))
-        local plrentity = getplayerentity(plr)
-        local plrposition = {entityx(plrentity),entityy(plrentity),entityz(plrentity)}
+        local plrposition = getplayerentity(plr)
+        plrposition = {entityx(plrposition),entityy(plrposition),entityz(plrposition)}
         if room == "exit1" and role ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
             escapedplrs[plr] = true
             escape2f(plr)
