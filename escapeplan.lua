@@ -6,7 +6,7 @@ function OnScriptLoaded()
 end
 
 function OnServerStart()
-    for i = 1, 10 do createfakeplayer(i) end
+    -- for i = 1, 10 do createfakeplayer(i) end
     OnServerRestart()
     return -1
 end
@@ -35,7 +35,6 @@ end
 
 function OnPlayerEscapeButDead(plr,_,role) --make them actually escape
 	setplayertype(plr,role)
-    print("lego")
 	escapedplrs[plr] = true
 	if role == 3 then escape2f(plr) else escape1f(plr) end
     return -1
@@ -44,7 +43,6 @@ end
 function escaped(plr,role)
     plr,role = tonumber(plr), tonumber(role)
     if escapedplrs[plr] then
-        print("pain")
         escapedplrs[plr] = false --Remove them from escapedplrs list
         if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+1, exit1[3]) else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
         --If they're on the list and turns into Chaos, then they escaped tho gate b. Otherwise they must have escaped tho gate a.
