@@ -66,17 +66,15 @@ end --execute escaped function after 100 milliseconds to make room for the natur
 function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even if escape tho own gate
     plr = tonumber(plr)
     if getplayerhandcuff(plr) == 1 then
-        local role = getplayertype(plr)
-        local room = getroomname(getplayerroomid(plr))
         local plrposition = getplayerentity(plr)
         plrposition = {entityx(plrposition),entityy(plrposition),entityz(plrposition)}
 
-        if room == "exit1" and role ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
+        if getroomname(getplayerroomid(plr)) == "exit1" and getplayertype(plr) ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
             escapedplrs[plr] = true
             escape2f(plr)
         end
 
-        if room == "gatea" and role == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
+        if getroomname(getplayerroomid(plr)) == "gatea" and getplayertype(plr) == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
             escapedplrs[plr] = true
             escape1f(plr)
         end
