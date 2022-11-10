@@ -96,8 +96,7 @@ function OnPlayerConsole(plr,txt) --Console makes testing a lot easier
 
     local select = {
         ["handcuff"] = function()
-            if getplayerhandcuff(plr) == 1 then
-                setplayerhandcuff(plr,0)
+            if getplayerhandcuff(plr) == 1 then setplayerhandcuff(plr,0)
             else
                 setplayerhandcuff(plr,1)
                 OnPlayerCuffPlayer(0,plr) --Call cuff callback. Assume player 0 == server
@@ -107,5 +106,6 @@ function OnPlayerConsole(plr,txt) --Console makes testing a lot easier
         ["testescape"] = function() teleport(function() escape1f(plr) end, function() escape2f(plr) end) end --Teleports player to opposite gate to test script
     }
     if type(select[txt]) == "function" then select[txt]() end
+    
     return -1
 end
