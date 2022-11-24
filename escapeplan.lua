@@ -105,6 +105,7 @@ function OnPlayerConsole(plr,txt) --Console makes testing a lot easier
         ["escape"] = function() teleport(function() escape2f(plr) end, function() escape1f(plr) end) end, --Functions as arguements. Runs when called inside the teleport()
         ["testescape"] = function() teleport(function() escape1f(plr) end, function() escape2f(plr) end) end --Teleports player to opposite gate to test script
     }
+    txt = string.lower(txt:gsub("%s+","")) -- Strip and lower command
     if type(select[txt]) == "function" then select[txt]() end
     
     return -1
