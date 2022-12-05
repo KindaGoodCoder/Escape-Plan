@@ -12,23 +12,24 @@ function OnServerStart()
 end
 
 function OnServerRestart()    
-    local entitypointers = {}
+    exit1, exit2 = nil
+    local debounce = false
     for i = 1, 70 do
 
         local findcoords = function(index,index2) --Function that finds and returnsobject entity of 2 index
             local entity,entity2 = getroomobjectentity(i,index), getroomobjectentity(i,index2)
-            return true,{entityx(entity),entityy(entity),entityz(entity)},{entityx(entity2),entityy(entity2),entityz(entity2)}
+            return {entityx(entity),entityy(entity),entityz(entity)},{entityx(entity2),entityy(entity2),entityz(entity2)}
             --returns true for entitypointer to confirm room, spawn location and escape location
         end
 
         local select = {
-            ["exit1"] = function() entitypointers[1], exit1, escape1 = findcoords(26,27) end,
-            ["gatea"] = function() entitypointers[2], exit2, escape2 = findcoords(27,11) end,
-            ["gateaentrance"] = function() entitypointers[3] = true end
+            ["exit1"] = function() exit1, escape1 = findcoords(26,27) end,
+            ["gatea"] = function() exit2, escape2 = findcoords(27,11) end,
+            ["gateaentrance"] = function() debounce = true end
         }
         if type(select[getroomname(i)]) == "function" then select[getroomname(i)]() end
 
-        if entitypointers[1] and entitypointers[2] and entitypointers[3] then --if all coords found, end function
+        if exit1 and exit2 and debounce then --if all coords found, end function
             escape1f = function(plr) setplayerposition(plr,"exit1", escape1[1], escape1[2], escape1[3]) end --escape1f(plr) will now teleport plr to gate b escape
             escape2f = function(plr) setplayerposition(plr,"gatea", escape2[1], escape2[2], escape2[3]) end --escape2f(plr) will now teleport plr to gate a escape            
             return -1
@@ -41,7 +42,6 @@ end
 
 function OnPlayerEscapeButDead(plr,_,role) --make them actually escape
 	setplayertype(plr,role)
-    print("lego")
 	escapedplrs[plr] = true
 	if role == 3 then escape2f(plr) else escape1f(plr) end
     return -1
