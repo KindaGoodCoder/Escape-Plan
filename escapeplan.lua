@@ -53,7 +53,8 @@ function OnPlayerEscape(plr,role)
         if escapedplrs[plr] then
             print("pain")
             escapedplrs[plr] = false --Remove them from escapedplrs list
-            if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+1, exit1[3]) else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
+            if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+1, exit1[3])
+            else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
             --If they're on the list and turns into Chaos, then they escaped tho gate b. Otherwise they must have escaped tho gate a.
         end
         return -1
@@ -65,23 +66,22 @@ end --execute escaped function after 100 milliseconds to make room for the natur
 
 function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even if escape tho own gate
     plr = tonumber(plr)
-    if getplayerhandcuff(plr) == 1 then
-        local plrposition = getplayerentity(plr)
-        plrposition = {entityx(plrposition),entityy(plrposition),entityz(plrposition)}
+    if getplayerhandcuff(plr) == 0 then return -1
+    local plrposition = getplayerentity(plr)
+    plrposition = {entityx(plrposition),entityy(plrposition),entityz(plrposition)}
 
-        if getroomname(getplayerroomid(plr)) == "exit1" and getplayertype(plr) ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
-            escapedplrs[plr] = true
-            escape2f(plr)
-        end
-
-        if getroomname(getplayerroomid(plr)) == "gatea" and getplayertype(plr) == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
-            escapedplrs[plr] = true
-            escape1f(plr)
-        end
-
-        recursive = function() OnPlayerCuffPlayer(_,plr); return -1 end
-        createtimer("recursive",1000,0) --script runs every 1 second to avoid possible lag.  It takes >1 second from the beginning of new escape coords to reach proper escape
+    if getroomname(getplayerroomid(plr)) == "exit1" and getplayertype(plr) ~= 3 and (plrposition[1] >= escape1[1] - 2) and (plrposition[3] <= escape1[3] + 10) then --if handcuffed SCPF staff then be sure to become CI
+        escapedplrs[plr] = true
+        escape2f(plr)
     end
+
+    if getroomname(getplayerroomid(plr)) == "gatea" and getplayertype(plr) == 3 and plrposition[1] >= 118 and plrposition[2] <= 496 and plrposition[3] <= 20 then --if handcuffed CD then MTF
+        escapedplrs[plr] = true
+        escape1f(plr)
+    end
+
+    recursive = function() OnPlayerCuffPlayer(_,plr); return -1 end
+    createtimer("recursive",1000,0) --script runs every 1 second to avoid possible lag.  It takes >1 second from the beginning of new escape coords to reach proper escape
     return -1
 end
 
