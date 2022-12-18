@@ -50,13 +50,12 @@ end
 function OnPlayerEscape(plr,role)
 
     escaped = function()
-        if escapedplrs[plr] then
-            print("pain")
-            escapedplrs[plr] = false --Remove them from escapedplrs list
-            if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+1, exit1[3])
-            else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
-            --If they're on the list and turns into Chaos, then they escaped tho gate b. Otherwise they must have escaped tho gate a.
-        end
+        if not escapedplrs[plr] then return -1 end
+        print("pain")
+        escapedplrs[plr] = false --Remove them from escapedplrs list
+        if role == 7 then setplayerposition(plr,"exit1", exit1[1], exit1[2]+1, exit1[3])
+        else setplayerposition(plr,"gatea", exit2[1], exit2[2], exit2[3]) end
+        --If they're on the list and turns into Chaos, then they escaped tho gate b. Otherwise they must have escaped tho gate a.
         return -1
     end
 
@@ -66,7 +65,7 @@ end --execute escaped function after 100 milliseconds to make room for the natur
 
 function OnPlayerCuffPlayer(_,plr) --For cuffed players to join enemy team even if escape tho own gate
     plr = tonumber(plr)
-    if getplayerhandcuff(plr) == 0 then return -1
+    if getplayerhandcuff(plr) == 0 then return -1 end
     local plrposition = getplayerentity(plr)
     plrposition = {entityx(plrposition),entityy(plrposition),entityz(plrposition)}
 
