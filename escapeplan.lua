@@ -6,7 +6,7 @@ function OnScriptLoaded() --Check if script loaded
 end
 
 function OnServerStart()
-    for i = 1, 10 do createfakeplayer(i) end
+    for i = 1, 3 do createfakeplayer(i) end
     OnServerRestart()
     return -1
 end
